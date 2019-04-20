@@ -1,0 +1,104 @@
+version: '3.7'
+
+services:
+  # Elastic Stack
+  elasticsearch:
+    image: elasticsearch:7.0.0
+    ports:
+      - "9200:9200"
+    configs:
+      - source: elasticsearch_config
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - ddes
+    deploy:
+      mode: replicated
+      replicas: 1
+  logstash:
+    image: logstash:7.0.0
+    ports:
+      - "9600:9600"
+    configs:
+      - source: logstash_config
+        target: /usr/share/logstash/config/logstash.yml
+      - source: logstash_pipeline
+        target: /usr/share/logstash/pipeline/logstash.conf
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - ddes
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - elasticsearch
+  kibana:
+    image: kibana:7.0.0
+    ports:
+      - "5601:5601"
+    configs:
+      - source: kibana_config
+        target: /usr/share/kibana/config/kibana.yml
+    networks:
+      - ddes
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.Kibana == true]
+    depends_on:
+      - elasticsearch
+  filebeat:
+    image: store/elastic/filebeat:7.0.0
+    configs:
+      - source: filebeat_config
+        target: /usr/share/filebeat/filebeat.yml
+    volumes:
+      - droppy-data:/files
+    networks:
+      - ddes
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.Droppy == true]
+    depends_on:
+      - logstash
+  # Droppy
+  droppy:
+    image: "silverwind/droppy:11.0.4"
+    ports: 
+      - "8989:8989"
+    volumes:
+      - droppy-data:/files
+      - ./droppy/config:/config #ugly, but necessary
+    networks:
+      - ddes
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.labels.Droppy == true]
+    depends_on:
+      - filebeat
+
+configs:
+  elasticsearch_config:
+    file: ./elasticsearch/config/elasticsearch.yml
+  logstash_config:
+    file: ./logstash/config/logstash.yml
+  logstash_pipeline:
+    file: ./logstash/pipeline/logstash.conf
+  kibana_config:
+    file: ./kibana/config/kibana.yml
+  filebeat_config:
+    file: ./filebeat/config/filebeat.yml
+
+volumes:
+  droppy-data:
+
+networks:
+  ddes:
+    driver: overlay
