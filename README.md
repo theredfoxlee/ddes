@@ -19,6 +19,8 @@ docker node update --label-add Droppy=true "${LEADER}"
 docker stack deploy -c docker-compose.yml ddes
 ```
 
+[![asciicast](https://asciinema.org/a/DVI2volRjVsZxBAAE3sNMNQix.svg)](https://asciinema.org/a/DVI2volRjVsZxBAAE3sNMNQix)
+
 ### Worker
 ```bash
 sysctl -w vm.max_map_count=262144
