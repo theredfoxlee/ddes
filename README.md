@@ -36,5 +36,23 @@ Droppy can be accessed via port **8989**.
 ### Data management
 Elasticsearch can be managed via REST API published on port **9200**.
 
+#### Mappings
+```bash
+curl -XPUT http://40.89.157.49:9200/_template/logstash_template -H 'Content-Type: application/json' -d '{
+  "index_patterns": ["logstash*"],
+  "order" : 5,
+  "mappings" : {
+    "properties": {
+      "Log Date":{"type":"date", "format": "dd.MM.yyyy HH:mm"}
+    }                                  
+  }
+}'
+```
+
+
 #### Logs
 Logs of each service in stack can be accessed via docker: `docker service logs <service_name>`
+
+
+
+
