@@ -3,30 +3,18 @@ filebeat.inputs:
     enabled: true
     paths:
       - /files/idoc_idoc.csv
-    field:
-      type: idoc_idoc
-    fields_under_root: true
   - type: log
     enabled: true
     paths:
       - /files/powerbi_link_activity.csv
-    field:
-      type: powerbi_link_activity
-    fields_under_root: true
   - type: log
     enabled: true
     paths:
       - /files/powerbi_requestor_activity.csv
-    field:
-      type: powerbi_requestor_activity
-    fields_under_root: true
   - type: log
     enabled: true
     paths:
       - /files/powerbi_statuses.csv
-    field:
-      type: powerbi_statuses
-    fields_under_root: true
 
 output.logstash:
   hosts: ["logstash:5044"]
