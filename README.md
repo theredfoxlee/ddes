@@ -43,7 +43,7 @@ curl -XPUT http://40.89.157.49:9200/_template/logstash_template -H 'Content-Type
   "order" : 5,
   "mappings" : {
     "properties": {
-      "Log Date":{"type":"date", "format": "dd.MM.yyyy HH:mm"}
+      "Log Date":{"type":"date", "format": "dd.MM.yyyy HH:mm"},
       "DATE":{"type":"date", "format": "dd.MM.yyy HH:mm:ss"}
     }                                  
   }
