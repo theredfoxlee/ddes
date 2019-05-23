@@ -2,10 +2,6 @@ filebeat.inputs:
   - type: log
     enabled: true
     paths:
-      - /files/idoc_idoc.csv
-  - type: log
-    enabled: true
-    paths:
       - /files/powerbi_link_activity.csv
   - type: log
     enabled: true
@@ -15,6 +11,18 @@ filebeat.inputs:
     enabled: true
     paths:
       - /files/powerbi_statuses.csv
+  - type: log
+    enabled: true
+    paths:
+      - /files/idoc_edid4.csv
+  - type: log
+    enabled: true
+    paths:
+      - /files/idoc_edidc.csv
+  - type: log
+    enabled: true
+    paths:
+      - /files/idoc_edis.csv
 
 output.logstash:
   hosts: ["logstash:5044"]
